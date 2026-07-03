@@ -31,7 +31,11 @@ public class OrderItemDAOImpl implements OrderItemDAO {
     public List<OrderItem> getOrderItemsByOrderId(int orderId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<OrderItem> query = session.createQuery(
-                    "FROM OrderItem WHERE order.orderId = :orderId", OrderItem.class);
+                    "SELECT oi FROM OrderItem oi " +
+                    "JOIN FETCH oi.menuItem mi " +
+                    "WHERE oi.order.orderId = :orderId",
+                    OrderItem.class
+            );
             query.setParameter("orderId", orderId);
             return query.list();
         } catch (Exception e) {

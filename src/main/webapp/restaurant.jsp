@@ -3,6 +3,8 @@
 <%@ page import="com.cravix.model.Restaurant" %>
 <%@ page import="com.cravix.model.MenuItem" %>
 <%@ page import="com.cravix.model.User" %>
+<%@ page import="java.math.BigDecimal" %>
+<%@ page import="com.cravix.model.CartItem" %>
 
 <%
     User user = (User) session.getAttribute("loggedInUser");
@@ -33,6 +35,31 @@
     }
 
     String firstCategory = categoryMap.isEmpty() ? "Menu" : categoryMap.keySet().iterator().next();
+
+    Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+    if (cart == null) {
+        cart = new LinkedHashMap<>();
+    }
+
+    List<CartItem> restaurantCartItems = new ArrayList<>();
+    BigDecimal subtotal = BigDecimal.ZERO;
+    int cartItemCount = 0;
+
+    for (CartItem cartItem : cart.values()) {
+        if (cartItem.getRestaurantId() == restaurant.getRestaurantId()) {
+            restaurantCartItems.add(cartItem);
+            subtotal = subtotal.add(cartItem.getTotalPrice());
+            cartItemCount += cartItem.getQuantity();
+        }
+    }
+
+    BigDecimal deliveryFee = restaurantCartItems.isEmpty() ? BigDecimal.ZERO : new BigDecimal("30");
+    BigDecimal packagingFee = restaurantCartItems.isEmpty() ? BigDecimal.ZERO : new BigDecimal("20");
+    BigDecimal total = subtotal.add(deliveryFee).add(packagingFee);
+
+    String cartConflict = request.getParameter("cartConflict");
+    String conflictMenuId = request.getParameter("menuId");
+    boolean showCartConflict = "true".equals(cartConflict) && conflictMenuId != null;
 %>
 
 <!DOCTYPE html>
@@ -369,10 +396,6 @@
     height:22px;
     background:#d9cfb4;
     flex:0;
-  }
-
-  .perks svg{
-    color:var(--olive);
   }
 
   .tabs{
@@ -756,6 +779,70 @@
     font-size:12px;
   }
 
+  .cart-conflict-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+  }
+
+  .cart-conflict-box{
+    width: 100%;
+    max-width: 430px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+    text-align: center;
+  }
+
+  .cart-conflict-box h3{
+    margin: 0 0 12px;
+    font-size: 24px;
+    font-weight: 800;
+    color: #2b2416;
+  }
+
+  .cart-conflict-box p{
+    margin: 8px 0;
+    color: #6b6457;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .cart-conflict-actions{
+    margin-top: 22px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .conflict-btn{
+    min-width: 150px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cancel-btn{
+    background: #f3eee1;
+    color: #2b2416;
+  }
+
+  .clear-btn{
+    background: #6b7a2a;
+    color: #fff;
+  }
+
   @media (max-width:1024px){
     .grid{grid-template-columns:1fr;}
     .sidebar{display:flex;overflow-x:auto;gap:8px;}
@@ -796,6 +883,27 @@
 </svg>
 
 <div class="container">
+
+  <% if (showCartConflict) { %>
+      <div class="cart-conflict-overlay">
+          <div class="cart-conflict-box">
+              <h3>Items already in cart</h3>
+              <p>Your cart contains items from another restaurant.</p>
+              <p>Do you want to clear the current cart and add this item?</p>
+
+              <div class="cart-conflict-actions">
+                  <a href="restaurant?restaurantId=<%= restaurant.getRestaurantId() %>" class="conflict-btn cancel-btn">
+                      Cancel
+                  </a>
+
+                  <a href="cart?action=clearAndAdd&restaurantId=<%= restaurant.getRestaurantId() %>&menuId=<%= conflictMenuId %>"
+                     class="conflict-btn clear-btn">
+                      Clear Cart & Add
+                  </a>
+              </div>
+          </div>
+      </div>
+  <% } %>
 
   <!-- Header -->
   <div class="header">
@@ -841,12 +949,8 @@
     </div>
 
     <div class="banner-actions">
-      <button class="icon-btn" title="Save">
-        ❤
-      </button>
-      <button class="icon-btn" title="Share">
-        ↗
-      </button>
+      <button class="icon-btn" title="Save">❤</button>
+      <button class="icon-btn" title="Share">↗</button>
     </div>
   </div>
 
@@ -937,7 +1041,13 @@
 
                           <div class="item-foot">
                             <div class="price">₹ <%= item.getPrice() %></div>
-                            <button class="add-btn">+ Add</button>
+
+                            <form action="cart" method="post" style="margin:0;">
+                                <input type="hidden" name="action" value="add">
+                                <input type="hidden" name="menuId" value="<%= item.getMenuId() %>">
+                                <input type="hidden" name="restaurantId" value="<%= restaurant.getRestaurantId() %>">
+                                <button type="submit" class="add-btn">+ Add</button>
+                            </form>
                           </div>
                         </div>
 
@@ -952,25 +1062,49 @@
       %>
     </div>
 
-    <!-- Order Panel UI placeholder -->
+    <!-- Dynamic Order Panel -->
     <div class="order">
       <div class="order-head">
         <div>
           <h3>Your Order</h3>
-          <div class="order-items">Cart module coming next</div>
+          <div class="order-items"><%= cartItemCount %> item(s) added</div>
         </div>
-        <div class="clear">Soon</div>
+        <% if (!restaurantCartItems.isEmpty()) { %>
+          <div class="clear">Live</div>
+        <% } else { %>
+          <div class="clear">Empty</div>
+        <% } %>
       </div>
 
-      <div class="order-placeholder">
-        This panel is ready for the cart flow. Once we wire the Add to Cart module, selected items, quantity, subtotal, delivery fee and total will show here automatically.
-      </div>
+      <% if (restaurantCartItems.isEmpty()) { %>
+          <div class="order-placeholder">
+            No items added yet. Click <b>+ Add</b> on any menu item and your live order summary will appear here.
+          </div>
+      <% } else { %>
+          <div class="order-placeholder" style="padding:14px 16px;">
+            <% for (CartItem cartItem : restaurantCartItems) { %>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:10px;">
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-weight:700; color:var(--brown); font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            <%= cartItem.getItemName() %>
+                        </div>
+                        <div style="font-size:12px; color:var(--muted);">
+                            Qty: <%= cartItem.getQuantity() %> × ₹<%= cartItem.getPrice() %>
+                        </div>
+                    </div>
+                    <div style="font-weight:700; color:var(--brown); white-space:nowrap;">
+                        ₹<%= cartItem.getTotalPrice() %>
+                    </div>
+                </div>
+            <% } %>
+          </div>
+      <% } %>
 
       <div class="divider"></div>
 
-      <div class="fee"><span class="lbl">Subtotal</span><span>₹0</span></div>
-      <div class="fee"><span class="lbl">Delivery Fee</span><span>₹0</span></div>
-      <div class="fee"><span class="lbl">Packaging Fee</span><span>₹0</span></div>
+      <div class="fee"><span class="lbl">Subtotal</span><span>₹<%= subtotal %></span></div>
+      <div class="fee"><span class="lbl">Delivery Fee</span><span>₹<%= deliveryFee %></span></div>
+      <div class="fee"><span class="lbl">Packaging Fee</span><span>₹<%= packagingFee %></span></div>
 
       <div class="coupon">
         <span class="l">🎟 Apply Coupon</span>
@@ -978,9 +1112,13 @@
       </div>
 
       <div class="divider"></div>
-      <div class="total"><span>Total</span><span>₹0</span></div>
+      <div class="total"><span>Total</span><span>₹<%= total %></span></div>
 
-      <button class="view-cart">View Cart</button>
+      <a href="cart" style="text-decoration:none;">
+        <button type="button" class="view-cart">
+          View Cart (<%= cartItemCount %>)
+        </button>
+      </a>
     </div>
 
   </div>

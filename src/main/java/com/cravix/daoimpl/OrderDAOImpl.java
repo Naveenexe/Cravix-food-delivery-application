@@ -7,6 +7,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import com.cravix.dao.OrderDAO;
+import com.cravix.model.OrderItem;
 import com.cravix.model.Orders;
 import com.cravix.util.HibernateUtil;
 
@@ -28,6 +29,25 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
+    public boolean saveOrderItems(List<OrderItem> orderItems) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            for (OrderItem orderItem : orderItems) {
+                session.persist(orderItem);
+            }
+
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
     public Orders getOrderById(int orderId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(Orders.class, orderId);
@@ -41,7 +61,12 @@ public class OrderDAOImpl implements OrderDAO {
     public List<Orders> getOrdersByUserId(int userId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Orders> query = session.createQuery(
-                    "FROM Orders WHERE user.userId = :userId ORDER BY orderDate DESC", Orders.class);
+                    "SELECT o FROM Orders o " +
+                    "JOIN FETCH o.restaurant r " +
+                    "WHERE o.user.userId = :userId " +
+                    "ORDER BY o.orderDate DESC",
+                    Orders.class
+            );
             query.setParameter("userId", userId);
             return query.list();
         } catch (Exception e) {
@@ -49,7 +74,6 @@ public class OrderDAOImpl implements OrderDAO {
         }
         return null;
     }
-
     @Override
     public List<Orders> getAllOrders() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
