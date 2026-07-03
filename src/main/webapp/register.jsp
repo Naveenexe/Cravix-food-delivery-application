@@ -125,39 +125,18 @@
     padding: 24px 56px;
   }
 
+  /* UPDATED LOGO */
   .logo {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-weight: 800;
-    font-size: 34px;
-    color: var(--olive-dark);
-    letter-spacing: -.6px;
   }
 
-  .logo .c {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border: 5px solid var(--olive-dark);
-    border-right-color: transparent;
-    border-radius: 50%;
-    font-size: 0;
-    position: relative;
-  }
-
-  .logo .c::after {
-    content: "";
-    position: absolute;
-    top: -6px;
-    right: 2px;
-    width: 8px;
-    height: 8px;
-    background: var(--yellow);
-    border-radius: 50%;
-    box-shadow: 6px -4px 0 -2px var(--yellow), -2px -8px 0 -2px var(--yellow);
+  .logo img {
+    height: 74px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 18px rgba(85,103,32,.18));
   }
 
   .signin {
@@ -256,13 +235,56 @@
     box-shadow: 0 20px 40px -30px rgba(0,0,0,.25);
   }
 
+  /* 3D / PREMIUM CARD */
   .card {
-    background: var(--white);
-    border-radius: 24px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 26px;
     padding: 40px 44px;
-    box-shadow: 0 30px 60px -30px rgba(60,45,20,.15);
+    box-shadow:
+      0 28px 70px -34px rgba(60,45,20,.22),
+      0 18px 28px -22px rgba(107,127,44,.22);
+    border: 1px solid rgba(255,255,255,.65);
     position: relative;
     z-index: 4;
+    transform-style: preserve-3d;
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 26px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,.85), rgba(232,181,48,.25), rgba(107,127,44,.12));
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 18px;
+    left: 24px;
+    width: 140px;
+    height: 26px;
+    background: linear-gradient(90deg, rgba(255,255,255,.6), rgba(255,255,255,0));
+    border-radius: 999px;
+    opacity: .55;
+    pointer-events: none;
+  }
+
+  .card:hover {
+    transform: translateY(-6px) rotateX(1.3deg) rotateY(-1.3deg);
+    box-shadow:
+      0 38px 90px -36px rgba(60,45,20,.28),
+      0 22px 34px -24px rgba(107,127,44,.24);
   }
 
   .card-head {
@@ -276,12 +298,15 @@
     width: 66px;
     height: 66px;
     border-radius: 50%;
-    background: #f0ecdd;
+    background: linear-gradient(145deg, #f7f2e3, #ebe4cf);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--olive-dark);
     flex-shrink: 0;
+    box-shadow:
+      inset 0 2px 8px rgba(255,255,255,.85),
+      0 10px 22px -16px rgba(0,0,0,.22);
   }
 
   .avatar svg {
@@ -325,6 +350,7 @@
     color: var(--olive-dark);
     width: 20px;
     height: 20px;
+    z-index: 2;
   }
 
   .field input,
@@ -332,14 +358,15 @@
     width: 100%;
     padding: 16px 18px 16px 52px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 14px;
     font-family: inherit;
     font-size: 15px;
     color: var(--brown);
-    background: #fff;
+    background: rgba(255,255,255,.92);
     outline: none;
-    transition: border .2s, box-shadow .2s;
+    transition: border .22s, box-shadow .22s, transform .22s;
     resize: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
   }
 
   .field input::placeholder,
@@ -350,7 +377,8 @@
   .field input:focus,
   .field textarea:focus {
     border-color: var(--olive);
-    box-shadow: 0 0 0 3px rgba(107,127,44,.12);
+    box-shadow: 0 0 0 4px rgba(107,127,44,.12);
+    transform: translateY(-1px);
   }
 
   .field textarea {
@@ -376,6 +404,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
   }
 
   .toggle-password svg {
@@ -387,19 +416,22 @@
     width: 100%;
     padding: 17px;
     margin-top: 10px;
-    background: var(--olive);
+    background: linear-gradient(135deg, var(--olive), var(--olive-dark));
     color: #fff;
     border: 0;
-    border-radius: 12px;
+    border-radius: 14px;
     font-family: inherit;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background .2s, transform .1s;
+    transition: transform .18s, box-shadow .25s, filter .25s;
+    box-shadow: 0 16px 30px -18px rgba(85,103,32,.55);
   }
 
   .btn-primary:hover {
-    background: var(--olive-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 36px -18px rgba(85,103,32,.6);
+    filter: brightness(1.02);
   }
 
   .btn-primary:active {
@@ -497,6 +529,10 @@
     .dots-corner {
       display: none;
     }
+
+    .logo img {
+      height: 64px;
+    }
   }
 </style>
 </head>
@@ -509,9 +545,9 @@
   <div class="dots-corner" id="dotsCorner"></div>
 
   <header class="header">
-    <div class="logo">
-      <span class="c"></span>ravix
-    </div>
+    <a href="home" class="logo">
+      <img src="images/cravix-logo.png" alt="Cravix Logo">
+    </a>
     <div class="signin">
       Already have an account?<a href="login.jsp">Sign in</a>
     </div>

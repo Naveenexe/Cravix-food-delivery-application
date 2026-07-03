@@ -128,36 +128,14 @@
   .logo {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-weight: 800;
-    font-size: 34px;
-    color: var(--olive-dark);
-    letter-spacing: -.6px;
+    text-decoration: none;
   }
 
-  .logo .c {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border: 5px solid var(--olive-dark);
-    border-right-color: transparent;
-    border-radius: 50%;
-    font-size: 0;
-    position: relative;
-  }
-
-  .logo .c::after {
-    content: "";
-    position: absolute;
-    top: -6px;
-    right: 2px;
-    width: 8px;
-    height: 8px;
-    background: var(--yellow);
-    border-radius: 50%;
-    box-shadow: 6px -4px 0 -2px var(--yellow), -2px -8px 0 -2px var(--yellow);
+  .logo img {
+    height: 74px;
+    width: auto;
+    display: block;
+    object-fit: contain;
   }
 
   .signup-top {
@@ -515,9 +493,9 @@
   <div class="dots-corner" id="dotsCorner"></div>
 
   <header class="header">
-    <div class="logo">
-      <span class="c"></span>ravix
-    </div>
+    <a href="home" class="logo">
+      <img src="images/cravix-logo.png" alt="Cravix Logo">
+    </a>
     <div class="signup-top">
       New to Cravix?<a href="register.jsp">Create account</a>
     </div>

@@ -72,40 +72,46 @@
   .header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 24px;
     margin-bottom: 28px;
     flex-wrap: wrap;
   }
-  .logo {
-    font-family: Georgia, serif;
-    font-size: 34px;
-    font-weight: 700;
-    color: var(--olive);
-    position: relative;
+
+  .brand-block{
+    display:flex;
+    align-items:center;
+    gap:14px;
   }
-  .logo::before {
-    content: "✦";
-    position: absolute;
-    top: -6px; left: -2px;
-    font-size: 12px;
-    color: var(--orange);
+
+  .site-logo{
+    display:flex;
+    align-items:center;
+    flex-shrink:0;
   }
-  .search {
-    flex: 1;
-    max-width: 520px;
-    background: #fff;
-    border-radius: 999px;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border: 1px solid var(--border);
+
+  .site-logo img{
+    height:60px;
+    width:auto;
+    display:block;
+    object-fit:contain;
   }
-  .search input {
-    border: none; outline: none; flex: 1;
-    background: transparent; font-size: 14px;
-    font-family: inherit; color: var(--muted);
+
+  .brand-text h2{
+    font-size:24px;
+    font-weight:700;
+    color:var(--text);
+    margin:0;
+    line-height:1.1;
   }
+
+  .brand-text p{
+    margin:4px 0 0;
+    font-size:13px;
+    color:var(--muted);
+    font-weight:500;
+  }
+
   .header-right {
     margin-left: auto;
     display: flex;
@@ -113,15 +119,34 @@
     gap: 16px;
     flex-wrap: wrap;
   }
-  .loc { display: flex; align-items: center; gap: 6px; font-weight: 500; }
-  .cart-icon { position: relative; font-size: 20px; }
-  .cart-icon .badge {
-    position: absolute; top: -8px; right: -10px;
-    background: var(--orange); color: #fff;
-    font-size: 11px; font-weight: 600;
-    width: 20px; height: 20px; border-radius: 50%;
-    display: grid; place-items: center;
+
+  .cart-btn{
+    position:relative;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
+
+  .cart-btn .badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+
   .user-chip{
     background:#fff;
     padding:10px 16px;
@@ -129,11 +154,21 @@
     border:1px solid var(--border);
     font-weight:700;
   }
+
   .nav-btn{
     background:#fff;
     padding:10px 16px;
     border-radius:12px;
     border:1px solid var(--border);
+    font-weight:700;
+  }
+
+  .logout-btn{
+    background:var(--olive);
+    color:#fff;
+    padding:10px 16px;
+    border-radius:12px;
+    border:1px solid var(--olive);
     font-weight:700;
   }
 
@@ -335,23 +370,38 @@
     .perks { grid-template-columns: repeat(2, 1fr); }
     .perk { border-right: none; }
   }
+
+  @media (max-width: 768px) {
+    .brand-block{ width:100%; }
+    .header-right{
+      margin-left:0;
+      width:100%;
+      justify-content:flex-start;
+    }
+  }
 </style>
 </head>
 <body>
 
 <header class="header">
-  <div class="logo">Cravix</div>
-
-  <div class="search">
-    <span>🔍</span>
-    <input placeholder="Search for restaurants or cuisines..." />
+  <div class="brand-block">
+    <a href="home" class="site-logo">
+      <img src="images/cravix-logo.png" alt="Cravix Logo">
+    </a>
+    <div class="brand-text">
+      <h2>Checkout</h2>
+      <p>Review your order and place it</p>
+    </div>
   </div>
 
   <div class="header-right">
-    <div class="loc">📍 <%= restaurantName %></div>
-    <a href="cart" class="cart-icon">🛍️<span class="badge"><%= totalItems %></span></a>
-    <div class="user-chip">Hi, <%= user.getFullName() %></div>
+    <a href="cart" class="cart-btn">
+      🛍️
+      <span class="badge"><%= totalItems %></span>
+    </a>
+    <a href="profile" class="user-chip">Hi, <%= user.getFullName() %></a>
     <a href="home" class="nav-btn">Home</a>
+    <a href="logout" class="logout-btn">Logout</a>
   </div>
 </header>
 
@@ -360,8 +410,7 @@
   <span class="current">Checkout</span>
 </div>
 
-<h1 class="page-title">Checkout <span class="leaf">🌿</span></h1>
-<p class="page-sub">Review your order and place it.</p>
+
 
 <% if (error != null) { %>
     <div class="error-box"><%= error %></div>
@@ -371,7 +420,6 @@
   <div class="grid">
 
     <div>
-      <!-- Address -->
       <div class="card address">
         <div class="card-head">
           <div class="icon-round">📍</div>
@@ -388,7 +436,6 @@
         <textarea name="deliveryAddress" required><%= user.getAddress() != null ? user.getAddress() : "" %></textarea>
       </div>
 
-      <!-- Delivery Options -->
       <div class="card">
         <div class="card-head">
           <div class="icon-round">🛵</div>
@@ -404,7 +451,6 @@
         </div>
       </div>
 
-      <!-- Payment -->
       <div class="card">
         <div class="card-head">
           <div class="icon-round">💳</div>
@@ -421,7 +467,6 @@
         </select>
       </div>
 
-      <!-- Order Items -->
       <div class="card">
         <div class="card-head">
           <div class="icon-round">🛍️</div>
@@ -430,9 +475,14 @@
         </div>
 
         <% for (CartItem item : cart.values()) { %>
+            <%
+                String imagePath = item.getImagePath();
+                if (imagePath == null || imagePath.trim().isEmpty()) {
+                    imagePath = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=60";
+                }
+            %>
             <div class="order-item">
-              <div class="thumb"
-                   style="background-image:url('<%= item.getImagePath() != null ? item.getImagePath() : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=60" %>');"></div>
+              <div class="thumb" style="background-image:url('<%= imagePath %>');"></div>
               <div>
                 <div class="oi-name"><%= item.getItemName() %></div>
                 <div class="oi-qty">Quantity: <%= item.getQuantity() %></div>
@@ -443,7 +493,6 @@
       </div>
     </div>
 
-    <!-- RIGHT -->
     <div class="summary">
       <div class="card">
         <div class="card-head">

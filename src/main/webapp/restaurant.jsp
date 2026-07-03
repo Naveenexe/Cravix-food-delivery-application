@@ -68,6 +68,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Cravix — <%= restaurant.getName() %></title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -89,13 +90,19 @@
     --nonveg:#d63a2f;
   }
 
-  *{box-sizing:border-box;margin:0;padding:0;}
+  *{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+  }
+
   html,body{
     background:var(--cream);
     color:var(--text);
     font-family:'Plus Jakarta Sans',sans-serif;
     -webkit-font-smoothing:antialiased;
   }
+
   body{
     position:relative;
     overflow-x:hidden;
@@ -148,51 +155,29 @@
   .header{
     display:flex;
     align-items:center;
-    gap:22px;
-    flex-wrap:wrap;
+    gap:18px;
+    flex-wrap:nowrap;
   }
 
-  .logo{
+  .site-logo{
     display:flex;
     align-items:center;
-    gap:2px;
-    font-weight:800;
-    font-size:34px;
-    color:var(--olive-deep);
-    letter-spacing:-.5px;
     text-decoration:none;
+    flex-shrink:0;
   }
 
-  .logo .c{
-    position:relative;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:38px;
-    height:38px;
-    border:4px solid var(--olive-deep);
-    border-right-color:transparent;
-    border-radius:50%;
-    transform:rotate(-25deg);
-    margin-right:4px;
-  }
-
-  .logo .c::after{
-    content:"";
-    position:absolute;
-    top:-6px;
-    right:2px;
-    width:8px;
-    height:8px;
-    background:var(--yellow);
-    border-radius:50%;
-    box-shadow:6px 4px 0 -2px var(--yellow),-4px 6px 0 -2px var(--yellow);
+  .site-logo img{
+    height:60px;
+    width:auto;
+    display:block;
+    object-fit:contain;
   }
 
   .search{
     flex:1;
-    max-width:420px;
     position:relative;
+    min-width:280px;
+    max-width:none;
   }
 
   .search input{
@@ -223,10 +208,11 @@
     gap:8px;
     font-weight:600;
     color:var(--brown);
+    white-space:nowrap;
   }
 
   .avatar{
-    margin-left:auto;
+    margin-left:0;
     display:flex;
     align-items:center;
     gap:12px;
@@ -240,6 +226,8 @@
     box-shadow:0 6px 18px rgba(60,50,20,.06);
     font-weight:700;
     color:var(--brown);
+    text-decoration:none;
+    white-space:nowrap;
   }
 
   .nav-btn{
@@ -250,6 +238,7 @@
     border-radius:12px;
     box-shadow:0 6px 18px rgba(60,50,20,.06);
     font-weight:700;
+    white-space:nowrap;
   }
 
   .logout-btn{
@@ -259,6 +248,7 @@
     padding:10px 16px;
     border-radius:12px;
     font-weight:700;
+    white-space:nowrap;
   }
 
   .banner{
@@ -285,21 +275,17 @@
     border:3px solid #fff2;
     border-radius:18px;
     display:flex;
-    flex-direction:column;
     align-items:center;
     justify-content:center;
     color:#eadf8a;
     font-weight:800;
-    font-size:12px;
+    font-size:16px;
     letter-spacing:1px;
     text-align:center;
     flex-shrink:0;
     text-transform:uppercase;
-  }
-
-  .rest-logo .leaf{
-    font-size:36px;
-    margin-bottom:6px;
+    padding:12px;
+    line-height:1.3;
   }
 
   .rest-info h1{
@@ -349,55 +335,6 @@
     gap:4px;
   }
 
-  .banner-actions{
-    margin-left:auto;
-    display:flex;
-    gap:10px;
-  }
-
-  .icon-btn{
-    width:44px;
-    height:44px;
-    background:#fff;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--brown);
-    border:none;
-  }
-
-  .perks{
-    margin-top:14px;
-    background:var(--cream-2);
-    border-radius:14px;
-    padding:14px 22px;
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    gap:12px;
-    color:var(--brown);
-    font-size:14px;
-    font-weight:500;
-    flex-wrap:wrap;
-  }
-
-  .perks > div{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex:1;
-    justify-content:center;
-    min-width:220px;
-  }
-
-  .perks .sep{
-    width:1px;
-    height:22px;
-    background:#d9cfb4;
-    flex:0;
-  }
-
   .tabs{
     margin-top:22px;
     display:flex;
@@ -408,17 +345,13 @@
 
   .tab{
     padding:14px 4px;
-    color:var(--muted);
-    font-weight:600;
+    color:var(--brown);
+    font-weight:700;
     position:relative;
     font-size:15px;
   }
 
-  .tab.active{
-    color:var(--brown);
-  }
-
-  .tab.active::after{
+  .tab::after{
     content:"";
     position:absolute;
     left:0;
@@ -458,42 +391,6 @@
   .cat.active{
     background:var(--olive-deep);
     color:#fff;
-  }
-
-  .promo{
-    margin:14px 8px 4px;
-    background:var(--cream-2);
-    border-radius:14px;
-    padding:18px 16px;
-    position:relative;
-    overflow:hidden;
-  }
-
-  .promo h4{
-    font-size:16px;
-    color:var(--brown);
-    font-weight:800;
-  }
-
-  .promo p{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:4px;
-  }
-
-  .promo .stamp{
-    position:absolute;
-    right:10px;
-    bottom:10px;
-    width:34px;
-    height:34px;
-    background:var(--olive);
-    color:#fff;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
   }
 
   .menu-col h2{
@@ -692,26 +589,6 @@
     color:var(--muted);
   }
 
-  .coupon{
-    margin-top:16px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:var(--cream);
-    border-radius:10px;
-    padding:12px 14px;
-    color:var(--brown);
-    font-weight:600;
-    font-size:14px;
-  }
-
-  .coupon .l{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    color:var(--olive);
-  }
-
   .total{
     display:flex;
     justify-content:space-between;
@@ -843,21 +720,43 @@
     color: #fff;
   }
 
+  @media (max-width: 1200px){
+    .header{
+      flex-wrap:wrap;
+    }
+
+    .search{
+      order:3;
+      width:100%;
+      flex:1 0 100%;
+    }
+  }
+
   @media (max-width:1024px){
-    .grid{grid-template-columns:1fr;}
-    .sidebar{display:flex;overflow-x:auto;gap:8px;}
-    .cat{white-space:nowrap;flex-shrink:0;}
-    .order{position:static;}
+    .grid{
+      grid-template-columns:1fr;
+    }
+
+    .sidebar{
+      display:flex;
+      overflow-x:auto;
+      gap:8px;
+    }
+
+    .cat{
+      white-space:nowrap;
+      flex-shrink:0;
+    }
+
+    .order{
+      position:static;
+    }
   }
 
   @media (max-width:768px){
     .banner{
       flex-direction:column;
       align-items:flex-start;
-    }
-
-    .banner-actions{
-      margin-left:0;
     }
 
     .item{
@@ -871,6 +770,32 @@
 
     .avatar{
       margin-left:0;
+    }
+
+    .site-logo img{
+      height:62px;
+    }
+
+    .location{
+      font-size:14px;
+    }
+  }
+
+  @media (max-width:600px){
+    .container{
+      padding:18px 16px;
+    }
+
+    .search input{
+      height:48px;
+      font-size:14px;
+    }
+
+    .user-chip,
+    .nav-btn,
+    .logout-btn{
+      padding:9px 14px;
+      font-size:14px;
     }
   }
 </style>
@@ -905,9 +830,10 @@
       </div>
   <% } %>
 
-  <!-- Header -->
   <div class="header">
-    <a href="home" class="logo"><span class="c"></span>ravix</a>
+    <a href="home" class="site-logo">
+      <img src="images/cravix-logo.png" alt="Cravix Logo">
+    </a>
 
     <div class="search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -926,16 +852,14 @@
     </div>
 
     <div class="avatar">
-      <div class="user-chip">Hi, <%= user.getFullName() %></div>
+      <a href="profile" class="user-chip">Hi, <%= user.getFullName() %></a>
       <a href="home" class="nav-btn">Home</a>
       <a href="logout" class="logout-btn">Logout</a>
     </div>
   </div>
 
-  <!-- Banner -->
   <div class="banner">
     <div class="rest-logo">
-      <span class="leaf">🍽️</span>
       <%= restaurant.getName().toUpperCase() %>
     </div>
 
@@ -947,34 +871,14 @@
         <span>• Fresh food • Fast delivery</span>
       </div>
     </div>
-
-    <div class="banner-actions">
-      <button class="icon-btn" title="Save">❤</button>
-      <button class="icon-btn" title="Share">↗</button>
-    </div>
   </div>
 
-  <!-- Perks -->
-  <div class="perks">
-    <div>🚚 Free delivery on orders above ₹199</div>
-    <div class="sep"></div>
-    <div>🛡 Hygienic packaging</div>
-    <div class="sep"></div>
-    <div>⭐ Top rated restaurant</div>
-  </div>
-
-  <!-- Tabs -->
   <div class="tabs">
-    <div class="tab active">Menu</div>
-    <div class="tab">Reviews</div>
-    <div class="tab">Photos</div>
-    <div class="tab">About</div>
+    <div class="tab">Menu</div>
   </div>
 
-  <!-- Main Grid -->
   <div class="grid">
 
-    <!-- Sidebar -->
     <div class="sidebar">
       <div class="cat active"><%= firstCategory %></div>
 
@@ -990,15 +894,8 @@
       <%
           }
       %>
-
-      <div class="promo">
-        <h4>Flat 20% OFF</h4>
-        <p>on orders above ₹499</p>
-        <div class="stamp">%</div>
-      </div>
     </div>
 
-    <!-- Menu Column -->
     <div class="menu-col">
 
       <%
@@ -1062,7 +959,6 @@
       %>
     </div>
 
-    <!-- Dynamic Order Panel -->
     <div class="order">
       <div class="order-head">
         <div>
@@ -1106,13 +1002,12 @@
       <div class="fee"><span class="lbl">Delivery Fee</span><span>₹<%= deliveryFee %></span></div>
       <div class="fee"><span class="lbl">Packaging Fee</span><span>₹<%= packagingFee %></span></div>
 
-      <div class="coupon">
-        <span class="l">🎟 Apply Coupon</span>
-        <span>›</span>
-      </div>
-
       <div class="divider"></div>
-      <div class="total"><span>Total</span><span>₹<%= total %></span></div>
+
+      <div class="total">
+        <span>Total</span>
+        <span>₹<%= total %></span>
+      </div>
 
       <a href="cart" style="text-decoration:none;">
         <button type="button" class="view-cart">
@@ -1123,7 +1018,6 @@
 
   </div>
 
-  <!-- Features -->
   <div class="features">
     <div class="feature">
       <div class="ic">🚚</div>

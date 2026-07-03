@@ -111,6 +111,88 @@
     text-decoration:none;
     color:inherit;
   }
+  .topbar{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:22px 60px;
+  flex-wrap:wrap;
+}
+
+.brand-block{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.site-logo{
+  display:flex;
+  align-items:center;
+}
+
+.site-logo img{
+  height:60px;
+  width:auto;
+  display:block;
+  object-fit:contain;
+}
+
+.brand-text h2{
+  margin:0;
+  font-size:24px;
+  font-weight:800;
+  color:var(--ink);
+  line-height:1.1;
+}
+
+.brand-text p{
+  margin-top:4px;
+  font-size:13px;
+  color:var(--muted);
+  font-weight:500;
+}
+
+.header-right{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.cart-btn{
+  position:relative;
+  text-decoration:none;
+  background:#fff;
+  color:inherit;
+  padding:10px;
+  border-radius:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+
+.cart-btn .badge{
+  position:absolute;
+  top:-6px;
+  right:-8px;
+  background:var(--orange);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  border-radius:999px;
+  padding:2px 6px;
+}
+
+.logout-btn{
+  background:var(--olive-dark);
+  color:#fff;
+}
   .cart .badge{
     position:absolute;top:-6px;right:-8px;background:var(--orange);color:#fff;
     font-size:11px;font-weight:700;border-radius:999px;padding:2px 6px
@@ -225,27 +307,28 @@
   <span></span><span></span><span></span><span></span><span></span><span></span>
 </div>
 
-<header>
-  <div class="logo"><span class="c">C</span>ravix</div>
+<header class="topbar">
+  <div class="brand-block">
+    <a href="home" class="site-logo">
+      <img src="images/cravix-logo.png" alt="Cravix Logo">
+    </a>
 
-  <div class="search">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
-    </svg>
-    <input placeholder="Search for restaurants or cuisines...">
+    <div class="brand-text">
+      <h2>Order Placed</h2>
+      <p>Your order has been confirmed</p>
+    </div>
   </div>
 
-  <div class="loc">📍 <%= restaurantName %></div>
+  <div class="header-right">
+    <a href="cart" class="cart-btn">
+      🛍️
+      <span class="badge"><%= totalItems %></span>
+    </a>
 
-  <a href="cart" class="cart">
-    🛍️
-    <span class="badge"><%= totalItems %></span>
-  </a>
-
-  <div class="avatar">
-    <div class="user-chip">Hi, <%= user.getFullName() %></div>
+    <a href="profile" class="user-chip">Hi, <%= user.getFullName() %></a>
     <a href="order-history" class="nav-btn">My Orders</a>
     <a href="home" class="nav-btn">Home</a>
+    <a href="logout" class="nav-btn logout-btn">Logout</a>
   </div>
 </header>
 
