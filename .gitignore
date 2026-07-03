@@ -1,0 +1,6 @@
+target/
+bin/
+.metadata/
+.idea/
+*.log
+.DS_Store
